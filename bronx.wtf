@@ -1,0 +1,72 @@
+-- Create the main GUI
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "bronx.wtf"
+gui.ResetOnSpawn = false
+
+-- Main Frame
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0, 600, 0, 400)
+main.Position = UDim2.new(0.5, -300, 0.5, -200)
+main.BackgroundColor3 = Color3.fromRGB(27, 26, 33)
+main.BorderSizePixel = 0
+main.Name = "MainFrame"
+
+-- Tab Buttons
+local tabButtons = Instance.new("Frame", main)
+tabButtons.Size = UDim2.new(1, 0, 0, 30)
+tabButtons.BackgroundTransparency = 1
+tabButtons.Name = "TabButtons"
+
+-- Button generator
+local function makeTabButton(name, xPos)
+    local btn = Instance.new("TextButton", tabButtons)
+    btn.Size = UDim2.new(0, 100, 1, 0)
+    btn.Position = UDim2.new(0, xPos, 0, 0)
+    btn.Text = name
+    btn.BackgroundColor3 = Color3.fromHex("#B611B1")
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextSize = 14
+    btn.BorderSizePixel = 0
+    return btn
+end
+
+local aimbotBtn = makeTabButton("Aimbot", 0)
+local playerBtn = makeTabButton("Player", 100)
+local visualsBtn = makeTabButton("Visuals", 200)
+
+-- Tab content frames
+local function makeTabFrame(name)
+    local tab = Instance.new("Frame", main)
+    tab.Size = UDim2.new(1, 0, 1, -30)
+    tab.Position = UDim2.new(0, 0, 0, 30)
+    tab.BackgroundColor3 = Color3.fromRGB(35, 34, 40)
+    tab.Visible = false
+    tab.Name = name
+    return tab
+end
+
+local aimbotTab = makeTabFrame("AimbotTab")
+local playerTab = makeTabFrame("PlayerTab")
+local visualsTab = makeTabFrame("VisualsTab")
+
+-- Tab logic
+local tabs = {
+    Aimbot = aimbotTab,
+    Player = playerTab,
+    Visuals = visualsTab
+}
+
+local function showTab(tabName)
+    for name, frame in pairs(tabs) do
+        frame.Visible = (name == tabName)
+    end
+end
+
+aimbotBtn.MouseButton1Click:Connect(function() showTab("Aimbot") end)
+playerBtn.MouseButton1Click:Connect(function() showTab("Player") end)
+visualsBtn.MouseButton1Click:Connect(function() showTab("Visuals") end)
+
+-- Default tab
+showTab("Aimbot")
