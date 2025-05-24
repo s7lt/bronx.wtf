@@ -1,72 +1,99 @@
--- Create the main GUI
+-- Create GUI
 local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "bronx.wtf"
 gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Main Frame
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 600, 0, 400)
-main.Position = UDim2.new(0.5, -300, 0.5, -200)
+-- Main Draggable Frame
+local main = Instance.new("Frame")
+main.Name = "MainFrame"
+main.Size = UDim2.new(0, 354, 0, 434) -- exact size from image
+main.Position = UDim2.new(0.5, -177, 0.5, -217)
 main.BackgroundColor3 = Color3.fromRGB(27, 26, 33)
 main.BorderSizePixel = 0
-main.Name = "MainFrame"
+main.Active = true
+main.Draggable = true
+main.Parent = gui
 
--- Tab Buttons
-local tabButtons = Instance.new("Frame", main)
-tabButtons.Size = UDim2.new(1, 0, 0, 30)
-tabButtons.BackgroundTransparency = 1
-tabButtons.Name = "TabButtons"
+-- Left Panel (Target Aimbot)
+local leftPanel = Instance.new("Frame", main)
+leftPanel.Size = UDim2.new(0, 170, 1, 0)
+leftPanel.Position = UDim2.new(0, 0, 0, 0)
+leftPanel.BackgroundColor3 = Color3.fromRGB(35, 34, 40)
+leftPanel.BorderSizePixel = 0
+leftPanel.Name = "LeftPanel"
 
--- Button generator
-local function makeTabButton(name, xPos)
-    local btn = Instance.new("TextButton", tabButtons)
-    btn.Size = UDim2.new(0, 100, 1, 0)
-    btn.Position = UDim2.new(0, xPos, 0, 0)
-    btn.Text = name
-    btn.BackgroundColor3 = Color3.fromHex("#B611B1")
-    btn.TextColor3 = Color3.new(1,1,1)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 14
-    btn.BorderSizePixel = 0
-    return btn
+-- Right Panel (Camera Aimbot)
+local rightPanel = Instance.new("Frame", main)
+rightPanel.Size = UDim2.new(0, 170, 1, 0)
+rightPanel.Position = UDim2.new(0, 184, 0, 0)
+rightPanel.BackgroundColor3 = Color3.fromRGB(35, 34, 40)
+rightPanel.BorderSizePixel = 0
+rightPanel.Name = "RightPanel"
+
+-- Title Bar
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1, 0, 0, 20)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundColor3 = Color3.fromHex("#B611B1")
+title.BorderSizePixel = 0
+title.Text = "Azure Modded | Actyrn + Tactical | .gg/azuremodded"
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 14
+title.TextColor3 = Color3.new(1, 1, 1)
+
+-- RBLXSCRIPTS.NET Label
+local link = Instance.new("TextLabel", main)
+link.Size = UDim2.new(0, 200, 0, 20)
+link.Position = UDim2.new(0.5, -100, 0, 20)
+link.BackgroundTransparency = 1
+link.Text = "RBLXSCRIPTS.NET"
+link.TextColor3 = Color3.fromHex("#B611B1")
+link.Font = Enum.Font.SourceSansBold
+link.TextSize = 16
+
+-- UIStroke for Style (Optional)
+local function addStrokeTo(frame)
+	local stroke = Instance.new("UIStroke", frame)
+	stroke.Color = Color3.fromHex("#B611B1")
+	stroke.Thickness = 1
 end
 
-local aimbotBtn = makeTabButton("Aimbot", 0)
-local playerBtn = makeTabButton("Player", 100)
-local visualsBtn = makeTabButton("Visuals", 200)
+addStrokeTo(leftPanel)
+addStrokeTo(rightPanel)
+addStrokeTo(main)
 
--- Tab content frames
-local function makeTabFrame(name)
-    local tab = Instance.new("Frame", main)
-    tab.Size = UDim2.new(1, 0, 1, -30)
-    tab.Position = UDim2.new(0, 0, 0, 30)
-    tab.BackgroundColor3 = Color3.fromRGB(35, 34, 40)
-    tab.Visible = false
-    tab.Name = name
-    return tab
+-- Sample Checkbox/Label (Repeat to build options)
+local function createCheckbox(text, parent, position)
+	local checkbox = Instance.new("TextButton", parent)
+	checkbox.Size = UDim2.new(0, 160, 0, 20)
+	checkbox.Position = position
+	checkbox.BackgroundColor3 = Color3.fromRGB(45, 44, 50)
+	checkbox.Text = "☐ " .. text
+	checkbox.TextColor3 = Color3.new(1, 1, 1)
+	checkbox.Font = Enum.Font.SourceSans
+	checkbox.TextSize = 14
+	checkbox.BorderSizePixel = 0
+	checkbox.AutoButtonColor = false
+
+	checkbox.MouseButton1Click:Connect(function()
+		if checkbox.Text:sub(1, 3) == "☐ " then
+			checkbox.Text = "☑ " .. text
+		else
+			checkbox.Text = "☐ " .. text
+		end
+	end)
 end
 
-local aimbotTab = makeTabFrame("AimbotTab")
-local playerTab = makeTabFrame("PlayerTab")
-local visualsTab = makeTabFrame("VisualsTab")
+-- Add checkboxes (example)
+createCheckbox("Enabled", leftPanel, UDim2.new(0, 5, 0, 30))
+createCheckbox("Auto Lock", leftPanel, UDim2.new(0, 5, 0, 55))
+createCheckbox("Fix Aimbot", leftPanel, UDim2.new(0, 5, 0, 80))
+createCheckbox("Use Spam Guns", leftPanel, UDim2.new(0, 5, 0, 105))
 
--- Tab logic
-local tabs = {
-    Aimbot = aimbotTab,
-    Player = playerTab,
-    Visuals = visualsTab
-}
+createCheckbox("Enabled", rightPanel, UDim2.new(0, 5, 0, 30))
+createCheckbox("Auto Lock", rightPanel, UDim2.new(0, 5, 0, 55))
+createCheckbox("Notify", rightPanel, UDim2.new(0, 5, 0, 80))
 
-local function showTab(tabName)
-    for name, frame in pairs(tabs) do
-        frame.Visible = (name == tabName)
-    end
-end
 
-aimbotBtn.MouseButton1Click:Connect(function() showTab("Aimbot") end)
-playerBtn.MouseButton1Click:Connect(function() showTab("Player") end)
-visualsBtn.MouseButton1Click:Connect(function() showTab("Visuals") end)
-
--- Default tab
-showTab("Aimbot")
